@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: siddhuspringboot
+  namespace: kube-logging
+spec:
+  selector:
+    matchLabels:
+      component: siddhuspringboot
+  template:
+    metadata:
+      labels:
+        component: siddhuspringboot
+    spec:
+      containers:
+      - name: siddhuspringboot
+        image: shdhumale/efk-springboot-docker-kubernetes:latest
+        env:
+        - name: discovery.type
+          value: single-node
+        ports:
+        - containerPort: 9898
+          name: http
+          protocol: TCP      
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: siddhuspringboot
+  namespace: kube-logging
+  labels:
+    service: siddhuspringboot
+spec:
+  type: NodePort
+  selector:
+    component: siddhuspringboot
+  ports:
+  - port: 9898
+    targetPort: 9898
